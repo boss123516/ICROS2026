@@ -205,6 +205,73 @@
       .mini-compare, .compare-videos, .condition-grid.two-items { grid-template-columns: 1fr !important; }
       .showcase-card .video-frame { padding: 0 12px 14px; }
     }
+
+    /* Main experiment gallery: stack the three demo cards in one column. */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: 1fr !important;
+      gap: 28px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .showcase-card {
+      width: 100%;
+    }
+    .showcase-card .video-frame,
+    .showcase-card .mini-compare {
+      padding: 0 18px 18px;
+    }
+    @media (max-width: 760px) {
+      .showcase-grid {
+        max-width: 100%;
+        gap: 20px;
+      }
+      .showcase-card .video-frame,
+      .showcase-card .mini-compare {
+        padding: 0 12px 14px;
+      }
+    }
+
+    /* Keep expanded panels inside each demo card instead of below the gallery. */
+    .showcase-card .card-details {
+      margin: 0 18px 18px;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .showcase-card .card-details summary {
+      cursor: pointer;
+      padding: 16px 18px;
+      font-weight: 950;
+      color: var(--navy);
+      background: #fff;
+    }
+    .showcase-card .card-details .details-lead {
+      margin: 0;
+      padding: 0 18px 18px;
+      color: var(--muted);
+    }
+    .showcase-card .card-details .compare-list {
+      padding: 0 18px 22px;
+    }
+    .showcase-card .card-details .condition-grid {
+      padding: 0 18px 22px;
+    }
+
+    /* Force each experiment card to read as: title/text first, video second, toggle third. */
+    .showcase-card {
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .showcase-card .showcase-copy {
+      order: 1 !important;
+    }
+    .showcase-card .video-frame,
+    .showcase-card .mini-compare {
+      order: 2 !important;
+    }
+    .showcase-card .card-details {
+      order: 3 !important;
+    }
   </style>
 </head>
 <body>
@@ -322,13 +389,11 @@
       <div class="showcase-grid">
         <article class="showcase-card">
           <div class="showcase-copy">
-            <p class="demo-label">Demo 01</p>
             <h3>BT Synthesis Process</h3>
             <p>Shows how the global plan, robot-specific subtrees, and inductive generalization lead to one reusable Identical BT.</p>
           </div>
           <div class="video-frame">
             <div class="video-block">
-              <p class="video-label">BT Synthesis Process</p>
               <div class="video-shell">
                 <video controls playsinline preload="metadata">
                   <source src="./assets/videos/bt_synthesis_process.webm" type="video/webm" />
@@ -341,10 +406,8 @@
 
         <article class="showcase-card featured-card">
           <div class="showcase-copy">
-            <p class="demo-label">Demo 02</p>
             <h3>Comparison: One-Step vs. Ours</h3>
-            <p>Representative 4×4, 4-cube case. Open the detailed panel to inspect all 4×4, 5×5, and 6×6 conditions.</p>
-            <a class="text-button" href="#comparison-details">Open detailed comparison ↓</a>
+            <p>Representative 4×4, 4-cube case. Use the toggle below this demo to inspect all 4×4, 5×5, and 6×6 conditions.</p>
           </div>
           <div class="mini-compare" aria-label="Representative One-Step and Ours comparison videos">
             <div class="video-block">
@@ -366,35 +429,13 @@
               </div>
             </div>
           </div>
-        </article>
 
-        <article class="showcase-card">
-          <div class="showcase-copy">
-            <p class="demo-label">Demo 03</p>
-            <h3>Scalability Test (Ours)</h3>
-            <p>Shows the same synthesized BT running without modification on a disturbed 5×5 environment.</p>
-            <a class="text-button" href="#scalability-details">Open scalability cases ↓</a>
-          </div>
-          <div class="video-frame">
-            <div class="video-block">
-              <p class="video-label ours-label">Scalability Overview</p>
-              <div class="video-shell">
-                <video controls playsinline preload="metadata">
-                  <source src="./assets/videos/scalability_5x5_disturbances.webm" type="video/webm" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <details id="comparison-details" class="details-panel">
-        <summary>Detailed comparison videos: 4×4, 5×5, 6×6 grids with 2, 3, and 4 cubes</summary>
-        <p class="details-lead">
-          Each condition shows the One-Step baseline and our Identical BT result as separate clips. This keeps the main gallery compact while still letting viewers inspect the per-condition behavior.
-        </p>
-        <div class="compare-list">
+          <details id="comparison-details" class="details-panel card-details">
+            <summary>Open detailed comparison videos</summary>
+            <p class="details-lead">
+              Each condition shows the One-Step baseline and our Identical BT result as separate clips. This keeps the main demo compact while still letting viewers inspect the per-condition behavior.
+            </p>
+            <div class="compare-list">
           <article class="compare-card">
             <h4>4x4 grid · 2 cubes</h4>
             <div class="compare-videos">
@@ -610,18 +651,35 @@
             </div>
             </div>
           </article>
-        </div>
-      </details>
+            </div>
+          </details>
+        </article>
 
-      <details id="scalability-details" class="details-panel">
-        <summary>Scalability test details</summary>
-        <p class="details-lead">
-          To evaluate scalability, we tested the same synthesized BT — without any modification — on a 7×7 grid with 16 cubes, and on 5×5 grids with added environmental disturbances. A <strong>dummy cube</strong> is a cube with no assigned goal. A <strong>forbidden zone</strong> is a cell that cubes cannot pass through. A <strong>dead robot</strong> is a robot that stops functioning.
-        </p>
-        <div class="condition-grid two-items">
-          <article class="condition-card success-card">
-            <p class="condition-title">7×7 grid · 16 cubes <span>Success</span></p>
+        <article class="showcase-card">
+          <div class="showcase-copy">
+            <h3>Scalability Test (Ours)</h3>
+            <p>Shows the same synthesized BT running without modification on a disturbed 5×5 environment. Use the toggle below this demo to open the full scalability cases.</p>
+          </div>
+          <div class="video-frame">
             <div class="video-block">
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/scalability_5x5_disturbances.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <details id="scalability-details" class="details-panel card-details">
+            <summary>Open scalability test cases</summary>
+            <p class="details-lead">
+              To evaluate scalability, we tested the same synthesized BT — without any modification — on a 7×7 grid with 16 cubes, and on 5×5 grids with added environmental disturbances. A <strong>dummy cube</strong> is a cube with no assigned goal. A <strong>forbidden zone</strong> is a cell that cubes cannot pass through. A <strong>dead robot</strong> is a robot that stops functioning.
+            </p>
+            <div class="condition-grid two-items">
+              <article class="condition-card success-card">
+                <p class="condition-title">7×7 grid · 16 cubes <span>Success</span></p>
+                <div class="video-block">
               <p class="video-label ours-label">Ours · 7×7 grid · 16 cubes</p>
               <div class="video-shell">
                 <video controls playsinline preload="metadata">
@@ -630,11 +688,11 @@
                 </video>
               </div>
             </div>
-            <p class="missing-video-note">Place the 7×7 video at <code>assets/videos/scalability_7x7_16cubes.webm</code> to activate this clip.</p>
-          </article>
-          <article class="condition-card success-card">
-            <p class="condition-title">5×5 grid · 3 cubes · 3 dummy cubes · 3 forbidden zones · 3 dead robots <span>Success</span></p>
-            <div class="video-block">
+                <p class="missing-video-note">Place the 7×7 video at <code>assets/videos/scalability_7x7_16cubes.webm</code> to activate this clip.</p>
+              </article>
+              <article class="condition-card success-card">
+                <p class="condition-title">5×5 grid · 3 cubes · 3 dummy cubes · 3 forbidden zones · 3 dead robots <span>Success</span></p>
+                <div class="video-block">
               <p class="video-label ours-label">Ours · Disturbed 5×5 grid</p>
               <div class="video-shell">
                 <video controls playsinline preload="metadata">
@@ -643,9 +701,11 @@
                 </video>
               </div>
             </div>
-          </article>
-        </div>
-      </details>
+              </article>
+            </div>
+          </details>
+        </article>
+      </div>
     </section>
 
     <section id="poster" class="section poster-section">
