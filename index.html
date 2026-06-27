@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="LLM-Based Inductive Synthesis of a Local Behavior Tree for Decentralized Multi-Robot Cooperation" />
+  <meta name="keywords" content="Behavior Tree, Large Language Model, Multi-Robot System, Multi-Robot Task Allocation, Identical BT, ICROS 2026" />
+  <meta property="og:title" content="LLM-Based Inductive Synthesis of a Local Behavior Tree" />
+  <meta property="og:description" content="ICROS 2026 project page for decentralized multi-robot cooperation using an Identical Behavior Tree." />
+  <meta property="og:image" content="./assets/images/poster_preview.png" />
+  <title>LLM-Based Inductive Synthesis of a Local Behavior Tree</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .poster-section {
+      max-width: 1380px;
+      text-align: center;
+    }
+    .poster-link {
+      display: block;
+      width: min(96vw, 1220px);
+      max-width: none;
+      margin: 38px auto 0;
+      text-decoration: none;
+    }
+    .poster-preview {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      box-shadow: 0 28px 80px rgba(9,46,112,.18);
+      background: white;
+    }
+    .showcase-card .video-frame {
+      order: 2;
+      padding: 0 16px 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .showcase-card .showcase-copy { order: 1; }
+    .gallery-video-card,
+    .video-block {
+      width: 100%;
+      min-width: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 24px rgba(9,46,112,.06);
+      box-sizing: border-box;
+    }
+    .gallery-video-card .video-label,
+    .video-block .video-label {
+      border-bottom: 1px solid var(--line);
+    }
+    .video-shell {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #06152f, #123f83);
+      overflow: hidden;
+    }
+    .video-shell video,
+    .gallery-video-card video,
+    .video-block video,
+    .condition-card video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: linear-gradient(135deg, #06152f, #123f83);
+    }
+    .condition-card .gallery-video-card {
+      margin-top: 14px;
+    }
+    .mini-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 16px 16px;
+    }
+    .mini-compare .video-block {
+      border-radius: 16px;
+      overflow: hidden;
+      background: #06152f;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .mini-compare video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: block;
+      background: #06152f;
+    }
+    .video-label {
+      margin: 0;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .04em;
+      color: var(--navy);
+      background: white;
+    }
+    .one-step-label { color: #9b2c2c; }
+    .ours-label { color: var(--green); }
+    .compare-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      padding: 22px 26px 28px;
+    }
+    .compare-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(9,46,112,.06);
+    }
+    .compare-card h4 {
+      margin: 0;
+      padding: 16px 18px;
+      color: var(--navy);
+      font-size: 17px;
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+    }
+    .compare-videos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px;
+      background: #f8fbff;
+    }
+    .compare-videos .video-block {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: white;
+    }
+    .compare-videos video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: block;
+      background: linear-gradient(135deg, #06152f, #123f83);
+    }
+    .missing-video-note {
+      padding: 20px;
+      color: var(--muted);
+      background: #fff;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .showcase-grid,
+    .compare-videos,
+    .mini-compare,
+    .condition-grid {
+      min-width: 0;
+    }
+    @media (max-width: 760px) {
+      .mini-compare, .compare-videos, .condition-grid.two-items { grid-template-columns: 1fr; }
+      .showcase-card .video-frame { padding: 0 12px 14px; }
+    }
+  
+    /* Unified video-card layout: every WebM clip is boxed like the comparison gallery. */
+    .showcase-card .video-frame {
+      order: 2;
+      width: 100%;
+      padding: 0 16px 16px;
+      box-sizing: border-box;
+    }
+    .video-block,
+    .gallery-video-card {
+      width: 100%;
+      min-width: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 24px rgba(9,46,112,.06);
+      box-sizing: border-box;
+    }
+    .video-block .video-label,
+    .gallery-video-card .video-label {
+      border-bottom: 1px solid var(--line);
+    }
+    .video-shell {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #06152f, #123f83);
+      overflow: hidden;
+    }
+    .video-shell > video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: linear-gradient(135deg, #06152f, #123f83);
+    }
+    .showcase-grid,
+    .compare-videos,
+    .mini-compare,
+    .condition-grid {
+      min-width: 0;
+    }
+    .condition-card .video-block { margin-top: 14px; }
+    @media (max-width: 760px) {
+      .mini-compare, .compare-videos, .condition-grid.two-items { grid-template-columns: 1fr !important; }
+      .showcase-card .video-frame { padding: 0 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero" id="top">
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#abstract">Abstract</a>
+      <a href="#method">Method</a>
+      <a href="#experiments">Experiments</a>
+      <a href="#videos">Videos</a>
+      <a href="#poster">Poster</a>
+      <a href="#downloads">Downloads</a>
+    </nav>
+
+    <div class="hero-inner">
+      <p class="eyebrow">ICROS 2026 · Korea Aerospace University</p>
+      <h1>LLM-Based Inductive Synthesis of a Local Behavior Tree for Decentralized Multi-Robot Cooperation</h1>
+      <p class="authors">Youngsang Kim*, Hyeun Baek*, Chaeyoung Lim*, Dayeon Hwang*, and Inmo Jang</p>
+      <p class="author-note">* Equal contribution. The marked authors contributed equally to this work.</p>
+      <p class="note">Institute of Control, Robotics and Systems · Daegu EXCO · July 1–3, 2026</p>
+
+      <div class="cta-row">
+        <a class="button primary" href="./assets/docs/paper.pdf" target="_blank" rel="noopener">Read Paper</a>
+        <a class="button" href="./assets/docs/poster_draft.pdf" target="_blank" rel="noopener">View Poster Draft</a>
+        <a class="button ghost" href="#videos">Watch Videos</a>
+        <a class="button github-button" href="https://github.com/boss123516/ICROS2026" target="_blank" rel="noopener" aria-label="Open GitHub repository">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.9.58.11.79-.25.79-.56 0-.28-.01-1.19-.02-2.16-3.2.7-3.88-1.36-3.88-1.36-.52-1.32-1.27-1.68-1.27-1.68-1.04-.71.08-.69.08-.69 1.15.08 1.75 1.18 1.75 1.18 1.02 1.74 2.68 1.24 3.34.95.1-.74.4-1.24.72-1.52-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.45.11-3.02 0 0 .97-.31 3.17 1.18a10.93 10.93 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.57.24 2.73.12 3.02.73.8 1.18 1.83 1.18 3.08 0 4.4-2.69 5.36-5.25 5.65.41.35.78 1.04.78 2.1 0 1.51-.01 2.72-.01 3.09 0 .31.21.68.8.56A11.52 11.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="abstract" class="section two-col">
+      <div>
+        <h2>Abstract</h2>
+        <p>
+          This project proposes an LLM-based framework for decentralized multi-robot cooperation. Instead of designing a separate controller for every robot, every robot executes the same local-level Behavior Tree, called an <strong>Identical BT</strong>, and chooses what to do from its own local observations.
+        </p>
+        <p>
+          The Identical BT is composed of a Contribution Check, an auction-based Assign Check, and an LLM-synthesized Problem Solving BT. Instance-specific subtrees are first generated from sampled global plans, then generalized into a reusable local action subtree through inductive synthesis.
+        </p>
+      </div>
+      <div class="stat-card">
+        <span class="big">9/9</span>
+        <span>Completed all evaluated 4×4, 5×5, and 6×6 cube-relay conditions</span>
+        <span class="big small">7×7 · 16 cubes</span>
+        <span>Scalability test completed without additional BT modification</span>
+      </div>
+    </section>
+
+    <section id="method" class="section">
+      <h2>Method: Identical BT for Local Cooperation</h2>
+      <p class="section-lead">
+        The main idea is simple: give every robot the same decision tree, but let each robot read the tree through its own local situation. Like workers following the same rulebook in different positions, robots can make different choices without needing different controllers.
+      </p>
+      <img class="wide-img" src="./assets/images/identical_bt_architecture.svg" alt="Identical BT architecture diagram" />
+
+      <div class="cards method-cards">
+        <article>
+          <h3>1. Contribution Check</h3>
+          <p>Determines whether the robot can contribute to the current task from its local observation. Robots that cannot help simply wait.</p>
+        </article>
+        <article>
+          <h3>2. Assign Check</h3>
+          <p>Uses an auction/MRTA-style check to prevent multiple robots from trying to perform the same task at the same time.</p>
+        </article>
+        <article>
+          <h3>3. Problem Solving BT</h3>
+          <p>Executes the assigned local action using the LLM-synthesized subtree generalized from instance-specific demonstrations.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="experiments" class="section">
+      <h2>Experiments</h2>
+      <p class="section-lead">
+        Experiments are conducted in a MuJoCo-based grid simulator with fixed ROBOTIS OMX-F robots. Each robot can pick and place cubes only inside its neighboring 2×2 grid, so cooperation is required to relay cubes to their goal cells.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>2 Cubes</th><th>3 Cubes</th><th>4 Cubes</th><th>Total</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>One-Step</td><td>3/3</td><td>2/3</td><td>0/3</td><td>5/9</td></tr>
+            <tr class="highlight"><td>Ours</td><td>3/3</td><td>3/3</td><td>3/3</td><td>9/9</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cards experiment-cards">
+        <article>
+          <h3>Baseline comparison</h3>
+          <p>One-Step directly asks the LLM to generate one full BT XML per condition. It often fails when multiple cubes create temporal resource conflicts.</p>
+        </article>
+        <article>
+          <h3>Generalization</h3>
+          <p>One Identical BT synthesized from a simple 4×4, 2-cube condition is reused across all nine tested conditions.</p>
+        </article>
+        <article>
+          <h3>Scalability</h3>
+          <p>The same BT is further tested on a larger 7×7 grid with 16 cubes and disturbed 5×5 environments.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="videos" class="section videos-section">
+      <h2>Experiment Videos</h2>
+      <p class="section-lead">
+        The gallery is organized as three demonstrations: BT synthesis, comparison, and scalability. Every WebM clip is wrapped in a consistent video card so the layout stays stable across different screen sizes.
+      </p>
+
+      <div class="showcase-grid">
+        <article class="showcase-card">
+          <div class="showcase-copy">
+            <p class="demo-label">Demo 01</p>
+            <h3>BT Synthesis Process</h3>
+            <p>Shows how the global plan, robot-specific subtrees, and inductive generalization lead to one reusable Identical BT.</p>
+          </div>
+          <div class="video-frame">
+            <div class="video-block">
+              <p class="video-label">BT Synthesis Process</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/bt_synthesis_process.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="showcase-card featured-card">
+          <div class="showcase-copy">
+            <p class="demo-label">Demo 02</p>
+            <h3>Comparison: One-Step vs. Ours</h3>
+            <p>Representative 4×4, 4-cube case. Open the detailed panel to inspect all 4×4, 5×5, and 6×6 conditions.</p>
+            <a class="text-button" href="#comparison-details">Open detailed comparison ↓</a>
+          </div>
+          <div class="mini-compare" aria-label="Representative One-Step and Ours comparison videos">
+            <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_4x4_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_4x4_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="showcase-card">
+          <div class="showcase-copy">
+            <p class="demo-label">Demo 03</p>
+            <h3>Scalability Test (Ours)</h3>
+            <p>Shows the same synthesized BT running without modification on a disturbed 5×5 environment.</p>
+            <a class="text-button" href="#scalability-details">Open scalability cases ↓</a>
+          </div>
+          <div class="video-frame">
+            <div class="video-block">
+              <p class="video-label ours-label">Scalability Overview</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/scalability_5x5_disturbances.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <details id="comparison-details" class="details-panel">
+        <summary>Detailed comparison videos: 4×4, 5×5, 6×6 grids with 2, 3, and 4 cubes</summary>
+        <p class="details-lead">
+          Each condition shows the One-Step baseline and our Identical BT result as separate clips. This keeps the main gallery compact while still letting viewers inspect the per-condition behavior.
+        </p>
+        <div class="compare-list">
+          <article class="compare-card">
+            <h4>4x4 grid · 2 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_4x4_2cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_4x4_2cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>4x4 grid · 3 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_4x4_3cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_4x4_3cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>4x4 grid · 4 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_4x4_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_4x4_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>5x5 grid · 2 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_5x5_2cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_5x5_2cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>5x5 grid · 3 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_5x5_3cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_5x5_3cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>5x5 grid · 4 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_5x5_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_5x5_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>6x6 grid · 2 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_6x6_2cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_6x6_2cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>6x6 grid · 3 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_6x6_3cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_6x6_3cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+
+          <article class="compare-card">
+            <h4>6x6 grid · 4 cubes</h4>
+            <div class="compare-videos">
+              <div class="video-block">
+              <p class="video-label one-step-label">One-Step</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/one_step_6x6_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+              <div class="video-block">
+              <p class="video-label ours-label">Ours</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/ours_6x6_4cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            </div>
+          </article>
+        </div>
+      </details>
+
+      <details id="scalability-details" class="details-panel">
+        <summary>Scalability test details</summary>
+        <p class="details-lead">
+          To evaluate scalability, we tested the same synthesized BT — without any modification — on a 7×7 grid with 16 cubes, and on 5×5 grids with added environmental disturbances. A <strong>dummy cube</strong> is a cube with no assigned goal. A <strong>forbidden zone</strong> is a cell that cubes cannot pass through. A <strong>dead robot</strong> is a robot that stops functioning.
+        </p>
+        <div class="condition-grid two-items">
+          <article class="condition-card success-card">
+            <p class="condition-title">7×7 grid · 16 cubes <span>Success</span></p>
+            <div class="video-block">
+              <p class="video-label ours-label">Ours · 7×7 grid · 16 cubes</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/scalability_7x7_16cubes.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            <p class="missing-video-note">Place the 7×7 video at <code>assets/videos/scalability_7x7_16cubes.webm</code> to activate this clip.</p>
+          </article>
+          <article class="condition-card success-card">
+            <p class="condition-title">5×5 grid · 3 cubes · 3 dummy cubes · 3 forbidden zones · 3 dead robots <span>Success</span></p>
+            <div class="video-block">
+              <p class="video-label ours-label">Ours · Disturbed 5×5 grid</p>
+              <div class="video-shell">
+                <video controls playsinline preload="metadata">
+                  <source src="./assets/videos/scalability_5x5_disturbances.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section id="poster" class="section poster-section">
+      <div class="poster-copy">
+        <h2>Poster Preview</h2>
+        <p>
+          The current poster is included as a draft preview. Replace <code>assets/images/poster_preview.png</code> and <code>assets/docs/poster_draft.pdf</code> when the final poster PDF is ready.
+        </p>
+        <a class="button primary" href="./assets/docs/poster_draft.pdf" target="_blank" rel="noopener">Open Poster Draft</a>
+      </div>
+      <a class="poster-link" href="./assets/docs/poster_draft.pdf" target="_blank" rel="noopener">
+        <img class="poster-preview" src="./assets/images/poster_preview.png" alt="ICROS 2026 poster preview" />
+      </a>
+    </section>
+
+    <section id="downloads" class="section downloads">
+      <h2>Downloads</h2>
+      <div class="cards">
+        <article>
+          <h3>Paper PDF</h3>
+          <p>Two-page ICROS 2026 manuscript.</p>
+          <a class="button primary" href="./assets/docs/paper.pdf" target="_blank" rel="noopener">Download Paper</a>
+        </article>
+        <article>
+          <h3>Poster Draft</h3>
+          <p>Current poster draft preview.</p>
+          <a class="button primary" href="./assets/docs/poster_draft.pdf" target="_blank" rel="noopener">Download Poster</a>
+        </article>
+        <article>
+          <h3>Project Repository</h3>
+          <p>Static website source and future experiment materials.</p>
+          <a class="button" href="https://github.com/boss123516/ICROS2026" target="_blank" rel="noopener">Open GitHub</a>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>LLM-Based Inductive Synthesis of a Local Behavior Tree for Decentralized Multi-Robot Cooperation · Korea Aerospace University</p>
+    <a href="#top">Back to top</a>
+  </footer>
+</body>
+</html>
